@@ -40,9 +40,10 @@ public class Adder {
 
     /**
      * Main entry point. Expects two or three integer arguments.
-     * Parses args[0] and args[1] as integers. If args.length == 3 and args[2] equals 'mul',
-     * calls multiply(a, b); if args[2] equals 'sub', calls subtract(a, b); otherwise calls add(a, b).
-     * If args.length is not 2 or 3, arguments are not valid integers, or args[2] is invalid, prints 'Error'.
+     * Parses args[0] and args[1] as integers. If args.length == 3, args[2] specifies the operation
+     * ('add', 'mul', 'sub'); otherwise defaults to 'add'.
+     * Delegates to Calculator.calculate() for operation execution.
+     * If args.length is not 2 or 3, arguments are not valid integers, or operation is unsupported, prints 'Error'.
      *
      * @param args command-line arguments (expects 2 or 3 arguments)
      */
@@ -55,23 +56,13 @@ public class Adder {
         try {
             int a = Integer.parseInt(args[0]);
             int b = Integer.parseInt(args[1]);
-            int result;
+            String operation = (args.length == 3) ? args[2] : "add";
             
-            if (args.length == 3) {
-                if ("mul".equals(args[2])) {
-                    result = multiply(a, b);
-                } else if ("sub".equals(args[2])) {
-                    result = subtract(a, b);
-                } else {
-                    System.out.println("Error");
-                    return;
-                }
-            } else {
-                result = add(a, b);
-            }
-            
+            int result = Calculator.calculate(a, b, operation);
             System.out.println(result);
         } catch (NumberFormatException e) {
+            System.out.println("Error");
+        } catch (IllegalArgumentException e) {
             System.out.println("Error");
         }
     }
