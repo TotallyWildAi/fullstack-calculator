@@ -2,7 +2,10 @@
 
 > **This entire application — every line of code, every test, every config file, every piece of documentation — was autonomously built by a swarm of AI coding agents. No human wrote a single line of code.**
 
-A production-grade full-stack calculator with JWT authentication, React frontend, Spring Boot backend, PostgreSQL persistence, comprehensive test coverage, and Docker deployment — created from an empty directory in **28 minutes** at a cost of **$1.45 USD**.
+A production-grade full-stack calculator with JWT authentication, React frontend, Spring Boot backend, PostgreSQL persistence, comprehensive test coverage, and Docker deployment — created from an empty directory in **28 minutes total** at a cost of **$1.45 USD**.
+
+- **BA Agent**: requirements analysis and task breakdown — **~10 minutes**
+- **Engineering Agent Swarm**: 22 tasks (code, tests, Docker, docs) — **~18 minutes**
 
 <p align="center">
   <img src="docs//benchmark-screenshot-main.png" alt="Calculator UI" width="75%">
@@ -10,7 +13,7 @@ A production-grade full-stack calculator with JWT authentication, React frontend
 
 ---
 
-**Built by [Dmitry Kislov](https://www.linkedin.com/in/dmitrykislov/)** | Autonomous Agent Swarm Architecture
+**Agent swarm designed and built by [Dmitry Kislov](https://www.linkedin.com/in/dmitrykislov/)**
 
 ---
 
@@ -51,7 +54,7 @@ A senior software engineer building this from scratch would need to:
 
 ## How This Was Built
 
-This project was created entirely by an autonomous agent swarm system designed and built by **[Dmitry Kislov](https://www.linkedin.com/in/dmitrykislov/)**.
+This project was created entirely by an autonomous agent swarm system.
 
 The system uses a multi-agent architecture with specialized roles:
 
