@@ -1,5 +1,9 @@
 package com.bench;
 
+import com.bench.persistence.CalculationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +18,9 @@ import java.util.Map;
  */
 @RestController
 public class CalculatorController {
+
+    @Autowired
+    private CalculationService calculationService;
 
     /**
      * GET /api/calculate endpoint.
@@ -31,6 +38,17 @@ public class CalculatorController {
             @RequestParam int b,
             @RequestParam(defaultValue = "add") String op) {
         int result = Calculator.calculate(a, b, op);
+        
+        // Extract username from JWT token in SecurityContext
+        String username = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            username = auth.getName();
+        }
+        
+        // Record calculation to database
+        calculationService.recordCalculation(a, b, op, result, username);
+        
         Map<String, Object> response = new HashMap<>();
         response.put("a", a);
         response.put("b", b);
