@@ -251,26 +251,29 @@ All authenticated endpoints require `Authorization: Bearer <token>` header.
 
 ## Testing
 
+**57 automated tests** across 9 test files — 51 backend (Java/JUnit 5) + 6 frontend (React/Vitest).
+
+| Category | Tests | Framework | Files |
+| --- | ---: | --- | --- |
+| **Backend unit** | 26 | JUnit 5 | AdderTest (14), CalculatorTest (6), HistoryLogTest (6) |
+| **Backend REST API** | 7 | MockMvc | CalculatorControllerTest |
+| **Backend security** | 6 | MockMvc + JWT | AuthIntegrationTest |
+| **Backend CLI integration** | 4 | JUnit 5 | IntegrationTest |
+| **Backend DB (Testcontainers)** | 4 | Testcontainers + PostgreSQL | CalculationRepositoryTest |
+| **Backend full-stack (Testcontainers)** | 4 | Testcontainers + MockMvc + JWT | FullStackDbIntegrationTest |
+| **Frontend UI** | 6 | Vitest + React Testing Library | LoginPage.test.tsx (3), CalculatorPage.test.tsx (3) |
+
 ### Backend Tests
 
 ```bash
 mvn test
 ```
 
-Runs unit tests, integration tests, and Testcontainers-based database tests. Coverage includes:
-- Calculator service logic
-- User authentication and JWT validation
-- Repository layer with real PostgreSQL (via Testcontainers)
-- Full-stack integration: login -> calculate -> verify DB persistence
-- REST controller endpoints with MockMvc
-
 ### Frontend Tests
 
 ```bash
 cd frontend && npm test
 ```
-
-Runs Vitest unit tests and React Testing Library component tests for Login and Calculator pages.
 
 ## Infrastructure
 
