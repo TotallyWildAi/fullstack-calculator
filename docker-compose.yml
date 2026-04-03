@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: calculator
       POSTGRES_PASSWORD: calculator
     ports:
-      - '5432:5432'
+      - '5434:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -33,7 +33,7 @@ services:
       SPRING_DATASOURCE_USERNAME: calculator
       SPRING_DATASOURCE_PASSWORD: calculator
     healthcheck:
-      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/api/calculate?a=1&b=1']
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/']
       interval: 10s
       timeout: 5s
       retries: 5
