@@ -1,10 +1,22 @@
 # Full-Stack Calculator
 
-A production-grade full-stack calculator application **autonomously built by a swarm of AI coding agents** — from an empty directory to a fully tested, Dockerized, documented application with zero human intervention.
+> **This entire application — every line of code, every test, every config file, every piece of documentation — was autonomously built by a swarm of AI coding agents. No human wrote a single line of code.**
+
+A production-grade full-stack calculator with JWT authentication, React frontend, Spring Boot backend, PostgreSQL persistence, comprehensive test coverage, and Docker deployment — created from an empty directory in **28 minutes** at a cost of **$1.45 USD**.
+
+<p align="center">
+  <img src="docs//benchmark-screenshot-main.png" alt="Calculator UI" width="75%">
+</p>
+
+---
+
+**Built by [Dmitry Kislov](https://www.linkedin.com/in/dmitrykislov/)** | Autonomous Agent Swarm Architecture
+
+---
 
 ## Why This Is Impressive
 
-This isn't a toy demo — it's a **complete, production-ready application** with JWT authentication, a React frontend, a Spring Boot backend, PostgreSQL persistence, Testcontainers integration tests, multi-stage Docker builds, and comprehensive documentation. Every line of code, every test, every config file was written by AI agents working autonomously.
+This isn't a toy demo — it's a **complete, production-ready application** with JWT authentication, a React frontend, a Spring Boot backend, PostgreSQL persistence, Testcontainers integration tests, multi-stage Docker builds, and comprehensive documentation. **Every line of code, every test, every config file was written by AI agents working autonomously.**
 
 ### AI Agents vs. Senior Software Engineer
 
@@ -12,6 +24,7 @@ A senior software engineer building this from scratch would need to:
 
 | Work Item | Estimated Human Time |
 | --- | --- |
+| Requirements analysis and task breakdown | 2-4 hours |
 | Project scaffolding (Maven, React/Vite, TypeScript config) | 1-2 hours |
 | Core business logic + unit tests (Calculator, Adder, history tracking) | 2-3 hours |
 | Spring Boot REST API setup + integration tests | 2-3 hours |
@@ -20,14 +33,13 @@ A senior software engineer building this from scratch would need to:
 | Frontend tests (Vitest, React Testing Library) | 1-2 hours |
 | PostgreSQL integration (JPA entities, repositories, Hibernate DDL) | 1-2 hours |
 | Testcontainers-based database tests | 1-2 hours |
-| Full-stack integration test (login → calculate → verify DB) | 1-2 hours |
+| Full-stack integration test (login -> calculate -> verify DB) | 1-2 hours |
 | Multi-stage Dockerfile + Docker Compose + healthchecks | 1-2 hours |
 | Documentation (README, API docs, architecture diagrams) | 1-2 hours |
 | Code review, debugging, iteration across all layers | 2-3 hours |
-| Requirements analysis and task breakdown | 2-4 hours |
 | **Total** | **~22-34 hours (3-5 working days)** |
 
-**The entire process — requirements analysis, coding, testing, and documentation — took under 28 minutes total:**
+**The AI agent swarm completed all of this in 28 minutes:**
 
 | Phase | Agent | Time |
 | --- | --- | --- |
@@ -35,46 +47,44 @@ A senior software engineer building this from scratch would need to:
 | Implementation of 22 tasks (code, tests, Docker, docs) | Engineering Agent Swarm | ~18 minutes |
 | **Total** | | **~28 minutes** |
 
-All at a cost of **$1.45 USD**.
-
-That's roughly a **60-70x speed improvement** over a senior engineer — while maintaining a 91% first-try success rate across 22 tasks, with built-in code review and automatic rework on failures.
+**Cost: $1.45 USD.** That's a **60-70x speed improvement** over a senior engineer — with a 91% first-try success rate, built-in code review, and automatic rework on failures.
 
 ## How This Was Built
 
-This project was created entirely by an autonomous agent swarm system designed and built by **Dmitry Kislov**.
+This project was created entirely by an autonomous agent swarm system designed and built by **[Dmitry Kislov](https://www.linkedin.com/in/dmitrykislov/)**.
 
 The system uses a multi-agent architecture with specialized roles:
 
-- **Orchestrator Agent**: Manages the task graph, resolves dependencies, and dispatches work to specialized agents.
-- **Software Engineer Agent**: Executes the Investigation → Solve → Build loop. Reads the codebase, generates patches, compiles, tests, and iterates on failures with error context.
-- **Code Review Agent**: Reviews each task's output against acceptance criteria. Can request rework if standards are not met.
+- **Orchestrator Agent** — Manages the task graph, resolves dependencies, and dispatches work to specialized agents.
+- **Software Engineer Agent** — Executes the Investigation -> Solve -> Build loop. Reads the codebase, generates patches, compiles, tests, and iterates on failures with error context.
+- **Code Review Agent** — Reviews each task's output against acceptance criteria. Can request rework if standards are not met.
 
 Each task follows this lifecycle:
 
-1. **Investigation**: Agent reads relevant files and understands the context.
-2. **Solve**: Agent generates patches to implement the task.
-3. **Build**: Agent compiles and runs tests to verify correctness.
-4. **Code Review**: Agent validates output against acceptance criteria.
-5. **Merge**: Approved changes are merged to main branch.
+1. **Investigation** — Agent reads relevant files and understands the context.
+2. **Solve** — Agent generates patches to implement the task.
+3. **Build** — Agent compiles and runs tests to verify correctness.
+4. **Code Review** — Agent validates output against acceptance criteria.
+5. **Merge** — Approved changes are merged to main branch.
 
 If a build fails, the agent retries with error context. If code review rejects the work, the task is reworked from scratch. The agent uses git worktrees for task isolation — each task works on its own branch. All agents use Claude (Anthropic) as the underlying LLM.
 
 ## Build Metrics
 
-| Metric | Value                                |
-| --- |--------------------------------------|
-| Tasks completed | 22                                   |
-| Agent runs | 26 (includes rework attempts)        |
-| Total LLM calls | 131                                  |
-| Total tokens consumed | 1,275,741 (~1.28M)                   |
-| Prompt (input) tokens | 1,140,085                            |
-| Completion (output) tokens | 135,656                              |
-| Sum of task durations | 1,063 seconds (17.7 minutes)         |
+| Metric | Value |
+| --- | --- |
+| Tasks completed | 22 |
+| Agent runs | 26 (includes rework attempts) |
+| Total LLM calls | 131 |
+| Total tokens consumed | 1,275,741 (~1.28M) |
+| Prompt (input) tokens | 1,140,085 |
+| Completion (output) tokens | 135,656 |
+| Sum of task durations | 1,063 seconds (17.7 minutes) |
 | Average per task | 6.0 calls, ~58K tokens, 48.3 seconds |
-| First-try success rate | 91% (20/22 without rework)           |
-| Rework cycles | 2                                    |
-| Human intervention | Zero                                 |
-| Model | Claude Haiku 4.5 (Anthropic)         |
+| First-try success rate | 91% (20/22 without rework) |
+| Rework cycles | 2 |
+| Human intervention | Zero |
+| Model | Claude Haiku 4.5 (Anthropic) |
 
 ### LLM Call Latency
 
@@ -128,11 +138,11 @@ If a build fails, the agent retries with error context. If code review rejects t
 
 A full-stack calculator with the following components:
 
-- **CLI**: Command-line interface for arithmetic operations
-- **REST API**: Spring Boot backend with JWT authentication
-- **React UI**: Modern single-page application with TypeScript
-- **Persistence**: PostgreSQL database with calculation history
-- **Security**: JWT-based stateless authentication with BCrypt password hashing
+- **CLI** — Command-line interface for arithmetic operations
+- **REST API** — Spring Boot backend with JWT authentication
+- **React UI** — Modern single-page application with TypeScript
+- **Persistence** — PostgreSQL database with calculation history
+- **Security** — JWT-based stateless authentication with BCrypt password hashing
 
 Supported operations: addition, subtraction, multiplication, division. All calculations are persisted with timestamps and user attribution.
 
@@ -177,19 +187,19 @@ Supported operations: addition, subtraction, multiplication, division. All calcu
 **Security Model**: JWT-based stateless authentication. Passwords are hashed with BCrypt. Each request includes a Bearer token in the Authorization header. The JwtAuthFilter validates tokens on every request.
 
 **Layered Architecture**:
-- **Controller Layer**: REST endpoints, request/response mapping
-- **Service Layer**: Business logic (Calculator service, User service)
-- **Repository Layer**: Spring Data JPA for database access
-- **Database Layer**: PostgreSQL with Hibernate DDL auto-update
+- **Controller Layer** — REST endpoints, request/response mapping
+- **Service Layer** — Business logic (Calculator service, User service)
+- **Repository Layer** — Spring Data JPA for database access
+- **Database Layer** — PostgreSQL with Hibernate DDL auto-update
 
 ## Integrations
 
 - Spring Security + JWT authentication flow
-- Spring Data JPA ↔ PostgreSQL (Hibernate ORM with DDL auto-update)
-- React ↔ Spring Boot REST API (via RTK Query)
-- Testcontainers ↔ PostgreSQL (singleton container pattern for integration tests)
+- Spring Data JPA <-> PostgreSQL (Hibernate ORM with DDL auto-update)
+- React <-> Spring Boot REST API (via RTK Query)
+- Testcontainers <-> PostgreSQL (singleton container pattern for integration tests)
 - Docker Compose orchestrating app + database with healthchecks
-- Multi-stage Docker build (Node frontend → Maven backend → JRE runtime)
+- Multi-stage Docker build (Node frontend -> Maven backend -> JRE runtime)
 
 ## Getting Started
 
@@ -204,13 +214,13 @@ Then open http://localhost:8080 in your browser.
 Default credentials:
 - Username: `testuser`
 - Password: `SecurePass123!`
-<p align="center">
-  <img src="docs//benchmark-screenshot-login.png" alt="Calculator UI" width="75%">
-</p>
-<p align="center">
-  <img src="docs//benchmark-screenshot-main.png" alt="Calculator UI" width="75%">
-</p>
 
+<p align="center">
+  <img src="docs//benchmark-screenshot-login.png" alt="Login Page" width="75%">
+</p>
+<p align="center">
+  <img src="docs//benchmark-screenshot-main.png" alt="Calculator Page" width="75%">
+</p>
 
 ### Manual Build
 
@@ -248,7 +258,7 @@ Runs unit tests, integration tests, and Testcontainers-based database tests. Cov
 - Calculator service logic
 - User authentication and JWT validation
 - Repository layer with real PostgreSQL (via Testcontainers)
-- Full-stack integration: login → calculate → verify DB persistence
+- Full-stack integration: login -> calculate -> verify DB persistence
 - REST controller endpoints with MockMvc
 
 ### Frontend Tests
@@ -270,3 +280,7 @@ Runs Vitest unit tests and React Testing Library component tests for Login and C
 Health checks ensure PostgreSQL is ready before the application starts. Named volumes persist database data across container restarts.
 
 **Docker Compose Test**: `scripts/docker-compose-test.sh` runs an automated end-to-end verification: starts services, authenticates via JWT, performs a calculation, verifies the UI is accessible, then tears everything down.
+
+---
+
+**Author**: [Dmitry Kislov](https://www.linkedin.com/in/dmitrykislov/) | This application and its documentation were generated by an autonomous AI agent swarm.
