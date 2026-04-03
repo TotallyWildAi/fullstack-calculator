@@ -2,6 +2,7 @@ package com.bench;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for the Adder class.
@@ -89,13 +90,41 @@ class AdderTest {
     }
 
     /**
+     * Test dividing two positive integers with integer division.
+     */
+    @Test
+    void testDivide() {
+        assertEquals(3, Adder.divide(10, 3));
+    }
+
+    /**
+     * Test dividing two positive integers with exact division.
+     */
+    @Test
+    void testDivideExact() {
+        assertEquals(3, Adder.divide(12, 4));
+    }
+
+    /**
+     * Test dividing by zero throws IllegalArgumentException.
+     */
+    @Test
+    void testDivideByZeroThrows() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> Adder.divide(5, 0)
+        );
+        assertEquals(true, exception.getMessage().contains("Division by zero"));
+    }
+
+    /**
      * Test main() with invalid operation argument.
      */
     @Test
     void testInvalidOperation() {
         java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(outContent));
-        Adder.main(new String[]{"1", "2", "div"});
+        Adder.main(new String[]{"1", "2", "invalid"});
         System.setOut(System.out);
         assertEquals("Error\n", outContent.toString());
     }

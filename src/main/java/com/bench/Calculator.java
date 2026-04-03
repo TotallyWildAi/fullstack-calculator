@@ -7,7 +7,7 @@ public class Calculator {
 
     /**
      * Performs arithmetic calculation based on the specified operation.
-     * Supported operations: 'add', 'sub', 'mul'. If operation is null, defaults to 'add'.
+     * Supported operations: 'add', 'sub', 'mul', 'div'. If operation is null, defaults to 'add'.
      *
      * @param a first integer operand
      * @param b second integer operand
@@ -21,7 +21,7 @@ public class Calculator {
 
     /**
      * Performs arithmetic calculation based on the specified operation with optional history logging.
-     * Supported operations: 'add', 'sub', 'mul'. If operation is null, defaults to 'add'.
+     * Supported operations: 'add', 'sub', 'mul', 'div'. If operation is null, defaults to 'add'.
      *
      * @param a first integer operand
      * @param b second integer operand
@@ -46,6 +46,9 @@ public class Calculator {
                 break;
             case "sub":
                 result = Adder.subtract(a, b);
+                break;
+            case "div":
+                result = Adder.divide(a, b);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown operation: " + operation);

@@ -39,11 +39,27 @@ public class Adder {
     }
 
     /**
+     * Divides two integers using integer division.
+     *
+     * @param a first integer (dividend)
+     * @param b second integer (divisor)
+     * @return integer division result of a / b
+     * @throws IllegalArgumentException if b is 0
+     */
+    public static int divide(int a, int b) {
+        if (b == 0) {
+            throw new IllegalArgumentException("Division by zero");
+        }
+        return a / b;
+    }
+
+    /**
      * Main entry point. Expects two or three integer arguments.
      * Parses args[0] and args[1] as integers. If args.length == 3, args[2] specifies the operation
-     * ('add', 'mul', 'sub'); otherwise defaults to 'add'.
+     * ('add', 'mul', 'sub', 'div'); otherwise defaults to 'add'.
      * Delegates to Calculator.calculate() for operation execution.
      * If args.length is not 2 or 3, arguments are not valid integers, or operation is unsupported, prints 'Error'.
+     * For division by zero, prints 'Error: Division by zero'.
      *
      * @param args command-line arguments (expects 2 or 3 arguments)
      */
@@ -63,7 +79,11 @@ public class Adder {
         } catch (NumberFormatException e) {
             System.out.println("Error");
         } catch (IllegalArgumentException e) {
-            System.out.println("Error");
+            if (e.getMessage() != null && e.getMessage().contains("Division by zero")) {
+                System.out.println("Error: Division by zero");
+            } else {
+                System.out.println("Error");
+            }
         }
     }
 }

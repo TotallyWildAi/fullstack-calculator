@@ -42,13 +42,21 @@ class CalculatorTest {
     }
 
     /**
+     * Test calculate with 'div' operation.
+     */
+    @Test
+    void testCalculateDiv() {
+        assertEquals(5, Calculator.calculate(10, 2, "div"));
+    }
+
+    /**
      * Test calculate with unsupported operation throws IllegalArgumentException.
      */
     @Test
     void testCalculateUnknownThrows() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> Calculator.calculate(1, 1, "div")
+            () -> Calculator.calculate(1, 1, "unknown")
         );
         assertEquals(true, exception.getMessage().contains("Unknown operation"));
     }
