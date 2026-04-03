@@ -28,3 +28,4 @@ Thumbs.db
 
 # Worker worktrees (per-task isolation)
 .worktrees/
+logs/**

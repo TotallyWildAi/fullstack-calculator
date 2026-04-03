@@ -25,26 +25,29 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="login-page">
-      <h1>Login</h1>
+    <div className="card">
+      <h1>Sign in</h1>
+      <p className="subtitle">Enter your credentials to continue</p>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
           <input
             id="username"
             data-testid="username-input"
             type="text"
+            placeholder="Enter username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
           <input
             id="password"
             data-testid="password-input"
             type="password"
+            placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -52,14 +55,15 @@ export default function LoginPage() {
         </div>
         <button
           data-testid="login-button"
+          className="btn btn-primary"
           type="submit"
           disabled={isLoading}
         >
-          {isLoading ? 'Logging in...' : 'Login'}
+          {isLoading ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
       {error && (
-        <div data-testid="error-message" className="error">
+        <div data-testid="error-message" className="error-message">
           {error}
         </div>
       )}

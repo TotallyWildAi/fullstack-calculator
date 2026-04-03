@@ -46,7 +46,9 @@ describe('LoginPage', () => {
 
   it('shows error message on failed login', async () => {
     const user = userEvent.setup()
-    const loginMock = vi.fn().mockRejectedValue(new Error('Invalid credentials'))
+    const loginMock = vi.fn().mockReturnValue({
+      unwrap: () => Promise.reject(new Error('Invalid credentials')),
+    })
 
     vi.mocked(calculatorApi.useLoginMutation).mockReturnValue([
       loginMock,
@@ -71,7 +73,9 @@ describe('LoginPage', () => {
 
   it('successful login dispatches token and navigates', async () => {
     const user = userEvent.setup()
-    const loginMock = vi.fn().mockResolvedValue({ token: 'test-token-123' })
+    const loginMock = vi.fn().mockReturnValue({
+      unwrap: () => Promise.resolve({ token: 'test-token-123' }),
+    })
 
     vi.mocked(calculatorApi.useLoginMutation).mockReturnValue([
       loginMock,
