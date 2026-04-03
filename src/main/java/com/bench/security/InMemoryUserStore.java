@@ -17,7 +17,7 @@ public class InMemoryUserStore {
 
     public InMemoryUserStore() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode("password");
+        String encodedPassword = encoder.encode("SecurePass123!");
         users.put("testuser", new User("testuser", encodedPassword, "USER"));
     }
 
