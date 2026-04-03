@@ -31,4 +31,36 @@ class AdderTest {
     void testAddZero() {
         assertEquals(0, Adder.add(0, 0));
     }
+
+    /**
+     * Test adding large numbers (edge case with Integer.MAX_VALUE).
+     */
+    @Test
+    void testAddLargeNumbers() {
+        assertEquals(Integer.MAX_VALUE, Adder.add(Integer.MAX_VALUE, 0));
+    }
+
+    /**
+     * Test multiplying two positive integers.
+     */
+    @Test
+    void testMultiply() {
+        assertEquals(12, Adder.multiply(3, 4));
+    }
+
+    /**
+     * Test multiplying by zero.
+     */
+    @Test
+    void testMultiplyByZero() {
+        assertEquals(0, Adder.multiply(5, 0));
+    }
+
+    /**
+     * Test multiplying with negative numbers.
+     */
+    @Test
+    void testMultiplyNegative() {
+        assertEquals(-6, Adder.multiply(-2, 3));
+    }
 }
