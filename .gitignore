@@ -29,3 +29,10 @@ Thumbs.db
 # Worker worktrees (per-task isolation)
 .worktrees/
 logs/**
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Vite build artifacts
+frontend/vite.config.d.ts
+frontend/vite.config.js
