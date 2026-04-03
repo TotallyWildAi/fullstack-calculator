@@ -28,10 +28,21 @@ public class Adder {
     }
 
     /**
+     * Subtracts two integers.
+     *
+     * @param a first integer
+     * @param b second integer
+     * @return difference of a and b
+     */
+    public static int subtract(int a, int b) {
+        return a - b;
+    }
+
+    /**
      * Main entry point. Expects two or three integer arguments.
      * Parses args[0] and args[1] as integers. If args.length == 3 and args[2] equals 'mul',
-     * calls multiply(a, b); otherwise calls add(a, b). If args.length is not 2 or 3,
-     * arguments are not valid integers, or args[2] is invalid, prints 'Error'.
+     * calls multiply(a, b); if args[2] equals 'sub', calls subtract(a, b); otherwise calls add(a, b).
+     * If args.length is not 2 or 3, arguments are not valid integers, or args[2] is invalid, prints 'Error'.
      *
      * @param args command-line arguments (expects 2 or 3 arguments)
      */
@@ -49,6 +60,8 @@ public class Adder {
             if (args.length == 3) {
                 if ("mul".equals(args[2])) {
                     result = multiply(a, b);
+                } else if ("sub".equals(args[2])) {
+                    result = subtract(a, b);
                 } else {
                     System.out.println("Error");
                     return;

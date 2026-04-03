@@ -63,4 +63,40 @@ class AdderTest {
     void testMultiplyNegative() {
         assertEquals(-6, Adder.multiply(-2, 3));
     }
+
+    /**
+     * Test subtracting two positive integers.
+     */
+    @Test
+    void testSubtract() {
+        assertEquals(2, Adder.subtract(5, 3));
+    }
+
+    /**
+     * Test subtracting resulting in a negative number.
+     */
+    @Test
+    void testSubtractNegativeResult() {
+        assertEquals(-2, Adder.subtract(3, 5));
+    }
+
+    /**
+     * Test subtracting equal numbers resulting in zero.
+     */
+    @Test
+    void testSubtractZero() {
+        assertEquals(0, Adder.subtract(5, 5));
+    }
+
+    /**
+     * Test main() with invalid operation argument.
+     */
+    @Test
+    void testInvalidOperation() {
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        Adder.main(new String[]{"1", "2", "div"});
+        System.setOut(System.out);
+        assertEquals("Error\n", outContent.toString());
+    }
 }
