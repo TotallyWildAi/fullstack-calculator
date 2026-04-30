@@ -25,4 +25,11 @@ public interface CalculationRepository extends JpaRepository<CalculationRecord, 
      * @return list of up to 10 CalculationRecord ordered by requestedAt descending
      */
     List<CalculationRecord> findTop10ByOrderByRequestedAtDesc();
+
+    /**
+     * Find the 50 most recent calculations across all users.
+     *
+     * @return list of up to 50 CalculationRecord ordered by requestedAt descending
+     */
+    List<CalculationRecord> findTop50ByOrderByRequestedAtDesc();
 }

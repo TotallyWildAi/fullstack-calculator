@@ -1,5 +1,6 @@
 package com.bench;
 
+import com.bench.persistence.CalculationRecord;
 import com.bench.persistence.CalculationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * REST controller exposing the Calculator via HTTP API.
@@ -73,6 +76,40 @@ public class CalculatorController {
         response.put("op", op);
         response.put("result", result);
         return response;
+    }
+
+    /**
+     * GET /api/history endpoint.
+     * Returns the last 50 calculations ordered by most recent first.
+     * Requires JWT authentication.
+     *
+     * @return JSON array of calculation records with id, a, b, op, result, createdAt fields
+     */
+    @GetMapping("/api/history")
+    @Operation(summary = "Get calculation history", description = "Returns the last 50 calculations ordered by most recent first")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "History retrieved successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "[{\"id\": 1, \"a\": 2, \"b\": 3, \"op\": \"add\", \"result\": 5, \"createdAt\": \"2024-01-01T12:00:00Z\"}]"))
+        ),
+        @ApiResponse(responseCode = "401", description = "Authentication required"),
+        @ApiResponse(responseCode = "403", description = "Forbidden - invalid JWT token")
+    })
+    public List<Map<String, Object>> getHistory() {
+        List<CalculationRecord> records = calculationService.getHistory();
+        
+        return records.stream()
+            .map(record -> {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("id", record.getId());
+                entry.put("a", record.getOperandA());
+                entry.put("b", record.getOperandB());
+                entry.put("op", record.getOperation());
+                entry.put("result", record.getResult());
+                entry.put("createdAt", record.getRequestedAt());
+                return entry;
+            })
+            .collect(Collectors.toList());
     }
 
     /**
