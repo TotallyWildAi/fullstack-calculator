@@ -31,7 +31,8 @@ public class CalculatorApp {
 
     /**
      * SecurityFilterChain that enforces JWT authentication on /api/calculate
-     * and permits public access to /api/auth/login.
+     * and permits public access to /api/auth/login, /v3/api-docs, /swagger-ui.html,
+     * and /actuator/health.
      * Uses stateless session management and JwtAuthFilter for token validation.
      */
     @Bean
@@ -40,6 +41,10 @@ public class CalculatorApp {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(a -> a
                 .requestMatchers("/api/auth/login").permitAll()
+                .requestMatchers("/v3/api-docs").permitAll()
+                .requestMatchers("/swagger-ui.html").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/api/calculate").authenticated()
                 .anyRequest().permitAll()
             )

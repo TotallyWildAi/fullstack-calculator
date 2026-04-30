@@ -1,5 +1,11 @@
 package com.bench.security;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +26,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "User authentication and JWT token management")
 public class AuthController {
 
     @Autowired
@@ -37,6 +44,13 @@ public class AuthController {
      *         or error message on failure (HTTP 401)
      */
     @PostMapping("/login")
+    @Operation(summary = "Authenticate user", description = "Validates credentials and returns a JWT token for use in subsequent API calls")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Authentication successful, JWT token returned",
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"token\": \"eyJ...\"}"))
+        ),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         try {
             // Authenticate using AuthenticationManager
@@ -60,4 +74,3 @@ public class AuthController {
         }
     }
 }
-
