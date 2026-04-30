@@ -1,6 +1,7 @@
 package com.bench;
 
 import com.bench.security.JwtAuthFilter;
+import com.bench.security.RateLimitFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -34,9 +35,10 @@ public class CalculatorApp {
      * and permits public access to /api/auth/login, /v3/api-docs, /swagger-ui.html,
      * and /actuator/health.
      * Uses stateless session management and JwtAuthFilter for token validation.
+     * Also registers RateLimitFilter after JwtAuthFilter for per-user rate limiting.
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter, RateLimitFilter rateLimitFilter) throws Exception {
         http.csrf(c -> c.disable())
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(a -> a
@@ -48,7 +50,8 @@ public class CalculatorApp {
                 .requestMatchers("/api/calculate").authenticated()
                 .anyRequest().permitAll()
             )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(rateLimitFilter, JwtAuthFilter.class);
         return http.build();
     }
 
