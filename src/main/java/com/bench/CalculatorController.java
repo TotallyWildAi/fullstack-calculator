@@ -1,6 +1,13 @@
 package com.bench;
 
 import com.bench.persistence.CalculationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +24,7 @@ import java.util.Map;
  * REST controller exposing the Calculator via HTTP API.
  */
 @RestController
+@Tag(name = "Calculator", description = "Arithmetic operations: add, subtract, multiply, divide")
 public class CalculatorController {
 
     @Autowired
@@ -33,6 +41,16 @@ public class CalculatorController {
      * @return JSON map with a, b, op, result fields
      */
     @GetMapping("/api/calculate")
+    @Operation(summary = "Perform arithmetic operation", description = "Executes the specified operation on two operands and returns the result")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Calculation successful",
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"a\": 2, \"b\": 3, \"op\": \"add\", \"result\": 5}"))
+        ),
+        @ApiResponse(responseCode = "400", description = "Invalid operation or invalid number format"),
+        @ApiResponse(responseCode = "401", description = "Authentication required"),
+        @ApiResponse(responseCode = "403", description = "Forbidden - invalid JWT token")
+    })
     public Map<String, Object> calculate(
             @RequestParam int a,
             @RequestParam int b,

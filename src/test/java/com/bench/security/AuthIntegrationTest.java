@@ -138,4 +138,26 @@ class AuthIntegrationTest {
                 .header("Authorization", "Bearer invalid.token.here"))
                 .andExpect(status().isForbidden());
     }
+
+    /**
+     * Test health endpoint is publicly accessible.
+     * Verifies that GET /actuator/health returns HTTP 200 with status:UP.
+     */
+    @Test
+    void testHealthEndpointPublicAccess() throws Exception {
+        mockMvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
+    }
+
+    /**
+     * Test OpenAPI docs endpoint is publicly accessible.
+     * Verifies that GET /v3/api-docs returns HTTP 200 with paths object.
+     */
+    @Test
+    void testOpenApiDocsPublicAccess() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.paths").exists());
+    }
 }

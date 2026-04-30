@@ -146,6 +146,8 @@ A full-stack calculator with the following components:
 - **React UI** — Modern single-page application with TypeScript
 - **Persistence** — PostgreSQL database with calculation history
 - **Security** — JWT-based stateless authentication with BCrypt password hashing
+- **API Documentation** — OpenAPI 3.0 with Swagger UI
+- **Health Monitoring** — Spring Boot Actuator health checks
 
 Supported operations: addition, subtraction, multiplication, division. All calculations are persisted with timestamps and user attribution.
 
@@ -154,6 +156,8 @@ Supported operations: addition, subtraction, multiplication, division. All calcu
 | Layer | Technology |
 | --- | --- |
 | Backend | Java 21, Spring Boot 3.4, Spring Security, Spring Data JPA |
+| API Docs | SpringDoc OpenAPI 2.6, Swagger UI |
+| Health Monitoring | Spring Boot Actuator |
 | Authentication | JWT (JSON Web Tokens), BCrypt |
 | Frontend | React 19, TypeScript, Vite, RTK Query, React Router |
 | Database | PostgreSQL 16, Hibernate ORM |
@@ -203,6 +207,8 @@ Supported operations: addition, subtraction, multiplication, division. All calcu
 - Testcontainers <-> PostgreSQL (singleton container pattern for integration tests)
 - Docker Compose orchestrating app + database with healthchecks
 - Multi-stage Docker build (Node frontend -> Maven backend -> JRE runtime)
+- SpringDoc OpenAPI for automatic API documentation
+- Spring Boot Actuator for health monitoring
 
 ## Getting Started
 
@@ -242,22 +248,56 @@ java -jar target/*.jar
 
 ## API Reference
 
+### Authentication
+
 | Method | Path | Auth Required | Description |
 | --- | --- | --- | --- |
 | POST | `/api/auth/login` | No | Authenticate user, returns JWT token |
+
+### Calculator
+
+| Method | Path | Auth Required | Description |
+| --- | --- | --- | --- |
 | GET | `/api/calculate?a=X&b=Y&op=OP` | Yes | Perform arithmetic operation |
+
+### Documentation & Health
+
+| Method | Path | Auth Required | Description |
+| --- | --- | --- | --- |
+| GET | `/v3/api-docs` | No | OpenAPI 3.0 specification (JSON) |
+| GET | `/swagger-ui.html` | No | Interactive API documentation (HTML) |
+| GET | `/actuator/health` | No | Application health status |
 
 All authenticated endpoints require `Authorization: Bearer <token>` header.
 
+### OpenAPI Documentation
+
+Access the interactive Swagger UI at http://localhost:8080/swagger-ui.html or view the raw OpenAPI specification at http://localhost:8080/v3/api-docs.
+
+### Health Check
+
+The health endpoint provides application status:
+
+```bash
+curl http://localhost:8080/actuator/health
+```
+
+Response:
+```json
+{
+  "status": "UP"
+}
+```
+
 ## Testing
 
-**57 automated tests** across 9 test files — 51 backend (Java/JUnit 5) + 6 frontend (React/Vitest).
+**59 automated tests** across 10 test files — 53 backend (Java/JUnit 5) + 6 frontend (React/Vitest).
 
 | Category | Tests | Framework | Files |
 | --- | ---: | --- | --- |
 | **Backend unit** | 26 | JUnit 5 | AdderTest (14), CalculatorTest (6), HistoryLogTest (6) |
 | **Backend REST API** | 7 | MockMvc | CalculatorControllerTest |
-| **Backend security** | 6 | MockMvc + JWT | AuthIntegrationTest |
+| **Backend security** | 8 | MockMvc + JWT | AuthIntegrationTest (includes health + docs tests) |
 | **Backend CLI integration** | 4 | JUnit 5 | IntegrationTest |
 | **Backend DB (Testcontainers)** | 4 | Testcontainers + PostgreSQL | CalculationRepositoryTest |
 | **Backend full-stack (Testcontainers)** | 4 | Testcontainers + MockMvc + JWT | FullStackDbIntegrationTest |
