@@ -39,6 +39,15 @@ public class CalculationService {
     }
 
     /**
+     * Retrieve the 50 most recent calculations across all users.
+     *
+     * @return list of up to 50 CalculationRecord ordered by most recent first
+     */
+    public List<CalculationRecord> getHistory() {
+        return calculationRepository.findTop50ByOrderByRequestedAtDesc();
+    }
+
+    /**
      * Retrieve all calculations performed by a specific user.
      *
      * @param username the username to filter by
