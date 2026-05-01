@@ -30,7 +30,7 @@ public class CalculationRecord {
     @Column(nullable = false)
     private Instant requestedAt;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String requestedBy;
 
     /**

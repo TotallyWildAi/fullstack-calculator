@@ -80,13 +80,13 @@ public class CalculatorController {
 
     /**
      * GET /api/history endpoint.
-     * Returns the last 50 calculations ordered by most recent first.
+     * Returns calculations for the authenticated user, ordered by most recent first.
      * Requires JWT authentication.
      *
      * @return JSON array of calculation records with id, a, b, op, result, createdAt fields
      */
     @GetMapping("/api/history")
-    @Operation(summary = "Get calculation history", description = "Returns the last 50 calculations ordered by most recent first")
+    @Operation(summary = "Get calculation history", description = "Returns the user's calculations ordered by most recent first")
     @SecurityRequirement(name = "Bearer Authentication")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "History retrieved successfully",
@@ -96,7 +96,15 @@ public class CalculatorController {
         @ApiResponse(responseCode = "403", description = "Forbidden - invalid JWT token")
     })
     public List<Map<String, Object>> getHistory() {
-        List<CalculationRecord> records = calculationService.getHistory();
+        // Extract username from SecurityContext
+        String username = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            username = auth.getName();
+        }
+        
+        // Get calculations for the authenticated user
+        List<CalculationRecord> records = calculationService.getCalculationsByUser(username);
         
         return records.stream()
             .map(record -> {

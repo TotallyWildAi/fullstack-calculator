@@ -9,6 +9,16 @@ import authReducer from '../api/authSlice'
 import { calculatorApi } from '../api/calculatorApi'
 import * as calculatorApiModule from '../api/calculatorApi'
 
+// Mock react-router-dom to capture useNavigate calls
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  }
+})
+
 // Mock the calculatorApi module
 vi.mock('../api/calculatorApi', async () => {
   const actual = await vi.importActual('../api/calculatorApi')
@@ -35,18 +45,20 @@ const createTestStore = (token: string | null = null) => {
 
 const renderWithProviders = (component: React.ReactElement, token: string | null = null) => {
   const testStore = createTestStore(token)
-  return render(
+  render(
     <Provider store={testStore}>
       <BrowserRouter>
         {component}
       </BrowserRouter>
     </Provider>
   )
+  return testStore
 }
 
 describe('CalculatorPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockNavigate.mockClear()
   })
 
   it('redirects to /login when not authenticated', () => {
@@ -97,6 +109,35 @@ describe('CalculatorPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('result-display')).toBeInTheDocument()
       expect(screen.getByTestId('result-display')).toHaveTextContent('Result: 8')
+    })
+  })
+
+  it('clears token and navigates to login when Sign out is clicked', async () => {
+    const user = userEvent.setup()
+
+    vi.mocked(calculatorApiModule.useCalculateQuery).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+    } as any)
+
+    const store = renderWithProviders(<CalculatorPage />, 'test-token-123')
+
+    // Verify token is present before logout
+    expect(store.getState().auth.token).toBe('test-token-123')
+
+    // Find and click the Sign out button
+    const signOutButton = screen.getByRole('button', { name: /sign out/i })
+    await user.click(signOutButton)
+
+    // Verify token is cleared from Redux store
+    expect(store.getState().auth.token).toBeNull()
+
+    // Verify useNavigate was called with '/login' and replace: true
+    expect(mockNavigate).toHaveBeenCalledWith('/login', { replace: true })
+
+    // Verify calculator inputs are no longer visible (component redirected)
+    await waitFor(() => {
+      expect(screen.queryByTestId('input-a')).not.toBeInTheDocument()
     })
   })
 })
