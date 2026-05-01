@@ -117,6 +117,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
      * @param username the authenticated username
      * @return seconds to wait (rounded up)
      */
+    /**
+     * Reset the rate limiter state. Used for testing purposes.
+     */
+    public void resetBuckets() {
+        buckets.clear();
+    }
+
     private long calculateRetryAfter(String username) {
         long now = System.currentTimeMillis();
         long[] bucket = buckets.get(username);
