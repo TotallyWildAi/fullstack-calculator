@@ -110,7 +110,7 @@ class RefreshTokenIntegrationTest {
         RefreshTokenRequest refreshRequest = new RefreshTokenRequest(oldRefreshToken);
         String refreshBody = objectMapper.writeValueAsString(refreshRequest);
 
-        MvcResult refreshResult = mockMvc.perform(post("/api/auth/refresh")
+        mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(refreshBody))
                 .andExpect(status().isOk())
