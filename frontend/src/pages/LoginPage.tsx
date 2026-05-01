@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useLoginMutation } from '../api/calculatorApi'
-import { setToken } from '../api/authSlice'
+import { setTokens } from '../api/authSlice'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
@@ -17,7 +17,7 @@ export default function LoginPage() {
     setError(null)
     try {
       const response = await login({ username, password }).unwrap()
-      dispatch(setToken(response.token))
+      dispatch(setTokens(response))
       navigate('/calculator')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')

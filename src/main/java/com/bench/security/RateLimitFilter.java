@@ -29,6 +29,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private static final int TOKENS_PER_MINUTE = 10;
     private static final long REFILL_INTERVAL_MS = 6000; // 6 seconds = 1 token every 6 seconds
     private static final long TOKENS_PER_REFILL = 1;
+    private static final int SC_TOO_MANY_REQUESTS = 429;
 
     // In-memory storage: username -> [tokens, lastRefillTime]
     private final ConcurrentHashMap<String, long[]> buckets = new ConcurrentHashMap<>();
@@ -59,7 +60,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         if (!checkRateLimit(username)) {
             // Rate limit exceeded - return 429
             long retryAfterSeconds = calculateRetryAfter(username);
-            response.setStatus(HttpServletResponse.SC_TOO_MANY_REQUESTS);
+            response.setStatus(SC_TOO_MANY_REQUESTS);
             response.setHeader("Retry-After", String.valueOf(retryAfterSeconds));
             response.setContentType("application/json");
 
