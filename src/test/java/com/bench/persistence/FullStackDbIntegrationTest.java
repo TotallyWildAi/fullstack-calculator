@@ -81,7 +81,7 @@ class FullStackDbIntegrationTest {
         assertEquals(10, record.getOperandA(), "operandA should be 10");
         assertEquals(5, record.getOperandB(), "operandB should be 5");
         assertEquals("add", record.getOperation(), "operation should be 'add'");
-        assertEquals(15, record.getResult(), "result should be 15");
+        assertEquals(15.0, record.getResult(), "result should be 15.0");
         assertEquals("testuser", record.getRequestedBy(), "requestedBy should be 'testuser'");
     }
 
@@ -125,13 +125,13 @@ class FullStackDbIntegrationTest {
 
         // Verify records (most recent first due to DESC ordering)
         assertEquals("sub", records.get(0).getOperation());
-        assertEquals(5, records.get(0).getResult());
+        assertEquals(5.0, records.get(0).getResult());
 
         assertEquals("mul", records.get(1).getOperation());
-        assertEquals(50, records.get(1).getResult());
+        assertEquals(50.0, records.get(1).getResult());
 
         assertEquals("add", records.get(2).getOperation());
-        assertEquals(15, records.get(2).getResult());
+        assertEquals(15.0, records.get(2).getResult());
     }
 
     /**
@@ -219,7 +219,7 @@ class FullStackDbIntegrationTest {
         String historyBody = historyResult.getResponse().getContentAsString();
         List<Map<String, Object>> testuserHistory = objectMapper.readValue(historyBody, List.class);
         assertEquals(1, testuserHistory.size(), "testuser should have exactly 1 calculation");
-        assertEquals(15, ((Map<String, Object>) testuserHistory.get(0)).get("result"), "calculation result should be 15");
+        assertEquals(15.0, ((Map<String, Object>) testuserHistory.get(0)).get("result"), "calculation result should be 15.0");
 
         // Login as alice and get token
         String aliceToken = loginAndGetToken("alice", "AnotherPass123!");

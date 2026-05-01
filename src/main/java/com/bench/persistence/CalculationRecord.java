@@ -16,16 +16,16 @@ public class CalculationRecord {
     private Long id;
 
     @Column(nullable = false)
-    private int operandA;
+    private double operandA;
 
     @Column(nullable = false)
-    private int operandB;
+    private double operandB;
 
     @Column(nullable = false)
     private String operation;
 
     @Column(nullable = false)
-    private int result;
+    private double result;
 
     @Column(nullable = false)
     private Instant requestedAt;
@@ -46,7 +46,7 @@ public class CalculationRecord {
     // Constructors
     public CalculationRecord() {}
 
-    public CalculationRecord(int operandA, int operandB, String operation, int result, String requestedBy) {
+    public CalculationRecord(double operandA, double operandB, String operation, double result, String requestedBy) {
         this.operandA = operandA;
         this.operandB = operandB;
         this.operation = operation;
@@ -63,19 +63,19 @@ public class CalculationRecord {
         this.id = id;
     }
 
-    public int getOperandA() {
+    public double getOperandA() {
         return operandA;
     }
 
-    public void setOperandA(int operandA) {
+    public void setOperandA(double operandA) {
         this.operandA = operandA;
     }
 
-    public int getOperandB() {
+    public double getOperandB() {
         return operandB;
     }
 
-    public void setOperandB(int operandB) {
+    public void setOperandB(double operandB) {
         this.operandB = operandB;
     }
 
@@ -87,11 +87,11 @@ public class CalculationRecord {
         this.operation = operation;
     }
 
-    public int getResult() {
+    public double getResult() {
         return result;
     }
 
-    public void setResult(int result) {
+    public void setResult(double result) {
         this.result = result;
     }
 

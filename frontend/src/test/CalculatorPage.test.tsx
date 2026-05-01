@@ -140,4 +140,93 @@ describe('CalculatorPage', () => {
       expect(screen.queryByTestId('input-a')).not.toBeInTheDocument()
     })
   })
+
+  it('hides input-b and sends correct payload for sqrt', async () => {
+    const user = userEvent.setup()
+    const mockUseCalculateQuery = vi.mocked(calculatorApiModule.useCalculateQuery)
+    const mockResult = { a: 9, b: 0, op: 'sqrt', result: 3 }
+
+    mockUseCalculateQuery.mockReturnValue({
+      data: mockResult,
+      isLoading: false,
+    } as any)
+
+    renderWithProviders(<CalculatorPage />, 'test-token')
+
+    // Initially, input-b should be visible (default op is 'add')
+    expect(screen.getByTestId('input-b')).toBeInTheDocument()
+
+    // Select sqrt operation
+    const selectOp = screen.getByTestId('select-op')
+    await user.selectOptions(selectOp, 'sqrt')
+
+    // After selecting sqrt, input-b should not be visible
+    expect(screen.queryByTestId('input-b')).not.toBeInTheDocument()
+
+    // Type value for input-a
+    const inputA = screen.getByTestId('input-a')
+    await user.type(inputA, '9')
+
+    // Click calculate button
+    const calculateButton = screen.getByTestId('calculate-button')
+    await user.click(calculateButton)
+
+    // Verify that useCalculateQuery was called with the correct parameters
+    // The mock is called with { a: 9, b: 0, op: 'sqrt' } as the first argument
+    expect(mockUseCalculateQuery).toHaveBeenCalled()
+    const callArgs = mockUseCalculateQuery.mock.calls[mockUseCalculateQuery.mock.calls.length - 1]
+    expect(callArgs[0]).toEqual({ a: 9, b: 0, op: 'sqrt' })
+  })
+
+  it('hides input-b and sends correct payload for log', async () => {
+    const user = userEvent.setup()
+    const mockUseCalculateQuery = vi.mocked(calculatorApiModule.useCalculateQuery)
+    const mockResult = { a: 100, b: 0, op: 'log', result: 2 }
+
+    mockUseCalculateQuery.mockReturnValue({
+      data: mockResult,
+      isLoading: false,
+    } as any)
+
+    renderWithProviders(<CalculatorPage />, 'test-token')
+
+    // Select log operation
+    const selectOp = screen.getByTestId('select-op')
+    await user.selectOptions(selectOp, 'log')
+
+    // After selecting log, input-b should not be visible
+    expect(screen.queryByTestId('input-b')).not.toBeInTheDocument()
+
+    // Type value for input-a
+    const inputA = screen.getByTestId('input-a')
+    await user.type(inputA, '100')
+
+    // Click calculate button
+    const calculateButton = screen.getByTestId('calculate-button')
+    await user.click(calculateButton)
+
+    // Verify that useCalculateQuery was called with the correct parameters
+    expect(mockUseCalculateQuery).toHaveBeenCalled()
+    const callArgs = mockUseCalculateQuery.mock.calls[mockUseCalculateQuery.mock.calls.length - 1]
+    expect(callArgs[0]).toEqual({ a: 100, b: 0, op: 'log' })
+  })
+
+  it('shows input-b for pow operation', async () => {
+    const user = userEvent.setup()
+    const mockUseCalculateQuery = vi.mocked(calculatorApiModule.useCalculateQuery)
+
+    mockUseCalculateQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+    } as any)
+
+    renderWithProviders(<CalculatorPage />, 'test-token')
+
+    // Select pow operation
+    const selectOp = screen.getByTestId('select-op')
+    await user.selectOptions(selectOp, 'pow')
+
+    // After selecting pow, input-b should still be visible
+    expect(screen.getByTestId('input-b')).toBeInTheDocument()
+  })
 })
