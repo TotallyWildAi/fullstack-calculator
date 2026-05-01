@@ -18,14 +18,20 @@ export default function CalculatorPage() {
     return null
   }
 
+  // Determine if the operation requires two operands
+  const requiresBOperand = ['add', 'sub', 'mul', 'div', 'pow'].includes(op)
+  
+  // For single-operand operations, pass b=0; for two-operand, use the actual b value
+  const bValue = requiresBOperand ? Number(b) : 0
+
   const { data: result, isLoading } = useCalculateQuery(
-    { a: Number(a), b: Number(b), op },
-    { skip: !shouldCalculate || a === '' || b === '' }
+    { a: Number(a), b: bValue, op },
+    { skip: !shouldCalculate || a === '' || (requiresBOperand && b === '') }
   )
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault()
-    if (a !== '' && b !== '') {
+    if (a !== '' && (requiresBOperand ? b !== '' : true)) {
       setShouldCalculate(true)
     }
   }
@@ -59,21 +65,23 @@ export default function CalculatorPage() {
               required
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="input-b">Value B</label>
-            <input
-              id="input-b"
-              data-testid="input-b"
-              type="number"
-              placeholder="0"
-              value={b}
-              onChange={(e) => {
-                setB(e.target.value === '' ? '' : Number(e.target.value))
-                setShouldCalculate(false)
-              }}
-              required
-            />
-          </div>
+          {requiresBOperand && (
+            <div className="form-group">
+              <label htmlFor="input-b">Value B</label>
+              <input
+                id="input-b"
+                data-testid="input-b"
+                type="number"
+                placeholder="0"
+                value={b}
+                onChange={(e) => {
+                  setB(e.target.value === '' ? '' : Number(e.target.value))
+                  setShouldCalculate(false)
+                }}
+                required
+              />
+            </div>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="select-op">Operation</label>
@@ -90,13 +98,16 @@ export default function CalculatorPage() {
             <option value="sub">Subtract (-)</option>
             <option value="mul">Multiply (*)</option>
             <option value="div">Divide (/)</option>
+            <option value="sqrt">Square Root (√)</option>
+            <option value="pow">Power (^)</option>
+            <option value="log">Logarithm (log₁₀)</option>
           </select>
         </div>
         <button
           data-testid="calculate-button"
           className="btn btn-primary"
           type="submit"
-          disabled={isLoading || a === '' || b === ''}
+          disabled={isLoading || a === '' || (requiresBOperand && b === '')}
         >
           {isLoading ? 'Calculating...' : 'Calculate'}
         </button>

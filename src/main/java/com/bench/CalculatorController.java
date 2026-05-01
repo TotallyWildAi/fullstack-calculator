@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * REST controller exposing the Calculator via HTTP API.
  */
 @RestController
-@Tag(name = "Calculator", description = "Arithmetic operations: add, subtract, multiply, divide")
+@Tag(name = "Calculator", description = "Arithmetic and scientific operations: add, subtract, multiply, divide, sqrt, pow, log")
 public class CalculatorController {
 
     @Autowired
@@ -35,30 +35,32 @@ public class CalculatorController {
 
     /**
      * GET /api/calculate endpoint.
-     * Accepts two integers and an optional operation, delegates to Calculator.calculate(),
+     * Accepts two operands and an operation, delegates to Calculator.calculateDouble(),
      * and returns a JSON response with operands, operation, and result.
+     * Supported operations: 'add', 'sub', 'mul', 'div', 'sqrt', 'pow', 'log'.
+     * For 'sqrt' and 'log', only parameter 'a' is required; 'b' defaults to 0.
      *
-     * @param a first operand
-     * @param b second operand
-     * @param op operation ('add', 'mul', 'sub', 'div'); defaults to 'add'
+     * @param a first operand (or sole operand for sqrt/log)
+     * @param b second operand (defaults to 0 for sqrt/log)
+     * @param op operation ('add', 'sub', 'mul', 'div', 'sqrt', 'pow', 'log'); defaults to 'add'
      * @return JSON map with a, b, op, result fields
      */
     @GetMapping("/api/calculate")
-    @Operation(summary = "Perform arithmetic operation", description = "Executes the specified operation on two operands and returns the result")
+    @Operation(summary = "Perform arithmetic or scientific operation", description = "Executes the specified operation on operands and returns the result. Supports: add, sub, mul, div, sqrt, pow, log")
     @SecurityRequirement(name = "Bearer Authentication")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Calculation successful",
-            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"a\": 2, \"b\": 3, \"op\": \"add\", \"result\": 5}"))
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"a\": 2, \"b\": 3, \"op\": \"add\", \"result\": 5.0}"))
         ),
-        @ApiResponse(responseCode = "400", description = "Invalid operation or invalid number format"),
+        @ApiResponse(responseCode = "400", description = "Invalid operation, invalid number format, or domain error (e.g., sqrt of negative)"),
         @ApiResponse(responseCode = "401", description = "Authentication required"),
         @ApiResponse(responseCode = "403", description = "Forbidden - invalid JWT token")
     })
     public Map<String, Object> calculate(
-            @RequestParam int a,
-            @RequestParam int b,
+            @RequestParam double a,
+            @RequestParam(defaultValue = "0") double b,
             @RequestParam(defaultValue = "add") String op) {
-        int result = Calculator.calculate(a, b, op);
+        double result = Calculator.calculateDouble(a, b, op);
         
         // Extract username from JWT token in SecurityContext
         String username = null;
@@ -90,7 +92,7 @@ public class CalculatorController {
     @SecurityRequirement(name = "Bearer Authentication")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "History retrieved successfully",
-            content = @Content(mediaType = "application/json", schema = @Schema(example = "[{\"id\": 1, \"a\": 2, \"b\": 3, \"op\": \"add\", \"result\": 5, \"createdAt\": \"2024-01-01T12:00:00Z\"}]"))
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "[{\"id\": 1, \"a\": 2, \"b\": 3, \"op\": \"add\", \"result\": 5.0, \"createdAt\": \"2024-01-01T12:00:00Z\"}]"))
         ),
         @ApiResponse(responseCode = "401", description = "Authentication required"),
         @ApiResponse(responseCode = "403", description = "Forbidden - invalid JWT token")
@@ -129,6 +131,20 @@ public class CalculatorController {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException e) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    /**
+     * Exception handler for ArithmeticException (e.g., sqrt of negative, log of zero/negative, division by zero).
+     * Returns HTTP 400 with error message in JSON body.
+     *
+     * @param e the ArithmeticException
+     * @return ResponseEntity with HTTP 400 and error message
+     */
+    @ExceptionHandler(ArithmeticException.class)
+    public ResponseEntity<Map<String, String>> handleArithmeticException(ArithmeticException e) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);

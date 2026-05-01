@@ -19,12 +19,12 @@ public class CalculationService {
      *
      * @param a first operand
      * @param b second operand
-     * @param operation the operation performed ('add', 'sub', 'mul', 'div')
+     * @param operation the operation performed ('add', 'sub', 'mul', 'div', 'sqrt', 'pow', 'log')
      * @param result the calculation result
      * @param username the user who requested the calculation (may be null for anonymous)
      * @return the saved CalculationRecord
      */
-    public CalculationRecord recordCalculation(int a, int b, String operation, int result, String username) {
+    public CalculationRecord recordCalculation(double a, double b, String operation, double result, String username) {
         CalculationRecord record = new CalculationRecord(a, b, operation, result, username);
         return calculationRepository.save(record);
     }
