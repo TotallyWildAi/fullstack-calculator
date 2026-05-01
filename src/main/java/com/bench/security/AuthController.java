@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * REST controller for authentication endpoints.
- * Handles user login and JWT token generation.
+ * Handles user login, JWT token generation, and refresh token rotation.
  */
 @RestController
 @RequestMapping("/api/auth")
@@ -37,21 +37,21 @@ public class AuthController {
 
     /**
      * POST /api/auth/login endpoint.
-     * Authenticates user with username and password, returns JWT token on success.
+     * Authenticates user with username and password, returns both access and refresh tokens on success.
      *
      * @param loginRequest JSON body with username and password
-     * @return ResponseEntity with JWT token on success (HTTP 200),
+     * @return ResponseEntity with access_token and refresh_token on success (HTTP 200),
      *         or error message on failure (HTTP 401)
      */
     @PostMapping("/login")
-    @Operation(summary = "Authenticate user", description = "Validates credentials and returns a JWT token for use in subsequent API calls")
+    @Operation(summary = "Authenticate user", description = "Validates credentials and returns access and refresh tokens for use in subsequent API calls")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Authentication successful, JWT token returned",
-            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"token\": \"eyJ...\"}"))
+        @ApiResponse(responseCode = "200", description = "Authentication successful, tokens returned",
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"access_token\": \"eyJ...\", \"refresh_token\": \"eyJ...\"}"))
         ),
         @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
             // Authenticate using AuthenticationManager
             Authentication authentication = authenticationManager.authenticate(
@@ -61,16 +61,74 @@ public class AuthController {
                 )
             );
 
-            // Generate JWT token for authenticated user
-            String token = jwtUtil.generateToken(loginRequest.username());
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
+            // Generate both access and refresh tokens
+            String accessToken = jwtUtil.generateAccessToken(loginRequest.username());
+            String refreshToken = jwtUtil.generateRefreshToken(loginRequest.username());
+            
+            TokenResponse response = new TokenResponse(accessToken, refreshToken);
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
             // Return 401 Unauthorized on authentication failure
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid credentials");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    /**
+     * POST /api/auth/refresh endpoint.
+     * Accepts a refresh token and issues a new pair of access and refresh tokens.
+     * The old refresh token is revoked (refresh token rotation).
+     *
+     * @param refreshRequest JSON body with refresh_token
+     * @return ResponseEntity with new access_token and refresh_token on success (HTTP 200),
+     *         or error message on failure (HTTP 401)
+     */
+    @PostMapping("/refresh")
+    @Operation(summary = "Refresh tokens", description = "Exchanges a valid refresh token for a new pair of access and refresh tokens")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Token refresh successful, new tokens returned",
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"access_token\": \"eyJ...\", \"refresh_token\": \"eyJ...\"}"))
+        ),
+        @ApiResponse(responseCode = "401", description = "Invalid or revoked refresh token")
+    })
+    public ResponseEntity<TokenResponse> refresh(@RequestBody RefreshTokenRequest refreshRequest) {
+        try {
+            String refreshToken = refreshRequest.refresh_token();
+            
+            // Validate refresh token exists
+            if (refreshToken == null || refreshToken.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Extract username from refresh token
+            String username = jwtUtil.extractUsername(refreshToken);
+            
+            // Validate token type is "refresh"
+            if (!jwtUtil.isTokenTypeValid(refreshToken, "refresh")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Validate token signature and expiration
+            if (!jwtUtil.isTokenValid(refreshToken, username)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Check if token has been revoked
+            if (jwtUtil.isRefreshTokenRevoked(refreshToken)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Revoke the old refresh token (rotation)
+            jwtUtil.revokeRefreshToken(refreshToken);
+            
+            // Generate new tokens
+            String newAccessToken = jwtUtil.generateAccessToken(username);
+            String newRefreshToken = jwtUtil.generateRefreshToken(username);
+            
+            TokenResponse response = new TokenResponse(newAccessToken, newRefreshToken);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // Return 401 Unauthorized on any error
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

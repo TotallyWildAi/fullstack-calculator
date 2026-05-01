@@ -32,7 +32,7 @@ public class CalculatorApp {
 
     /**
      * SecurityFilterChain that enforces JWT authentication on /api/calculate
-     * and permits public access to /api/auth/login, /v3/api-docs, /swagger-ui.html,
+     * and permits public access to /api/auth/login, /api/auth/refresh, /v3/api-docs, /swagger-ui.html,
      * and /actuator/health.
      * Uses stateless session management and JwtAuthFilter for token validation.
      * Also registers RateLimitFilter after JwtAuthFilter for per-user rate limiting.
@@ -43,6 +43,7 @@ public class CalculatorApp {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(a -> a
                 .requestMatchers("/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/refresh").permitAll()
                 .requestMatchers("/v3/api-docs").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()

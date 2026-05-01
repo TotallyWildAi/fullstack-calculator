@@ -17,6 +17,7 @@ import java.io.IOException;
 /**
  * JWT authentication filter that validates Bearer tokens in Authorization header.
  * Extends OncePerRequestFilter to ensure it runs once per request.
+ * Only accepts access tokens (typ="access"); refresh tokens are rejected.
  * On valid token, sets authentication in SecurityContextHolder.
  * On invalid/missing token, continues filter chain (Spring Security will reject if needed).
  */
@@ -45,7 +46,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // Validate token and set authentication if valid
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (jwtUtil.isTokenValid(token, username)) {
+                // Only accept access tokens, reject refresh tokens
+                if (jwtUtil.isTokenTypeValid(token, "access") && jwtUtil.isTokenValid(token, username)) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -65,4 +67,3 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-

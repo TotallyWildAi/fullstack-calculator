@@ -35,7 +35,7 @@ class AuthIntegrationTest {
     /**
      * Test successful login with correct credentials.
      * Verifies that POST /api/auth/login with valid username and password
-     * returns HTTP 200 with a JWT token in the response.
+     * returns HTTP 200 with access_token and refresh_token in the response.
      */
     @Test
     void testLoginSuccess() throws Exception {
@@ -46,7 +46,8 @@ class AuthIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
+                .andExpect(jsonPath("$.access_token").exists())
+                .andExpect(jsonPath("$.refresh_token").exists());
     }
 
     /**
@@ -98,10 +99,10 @@ class AuthIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // Extract token from login response
+        // Extract access token from login response
         String responseBody = loginResult.getResponse().getContentAsString();
         Map<String, String> responseMap = objectMapper.readValue(responseBody, Map.class);
-        String token = responseMap.get("token");
+        String token = responseMap.get("access_token");
 
         // Use token to access protected endpoint
         mockMvc.perform(get("/api/calculate")
