@@ -34,6 +34,32 @@ public class CalculatorController {
     private CalculationService calculationService;
 
     /**
+     * GET /api/hello/me endpoint.
+     * Returns the currently authenticated user's username.
+     * Requires JWT authentication with an access token.
+     *
+     * @return JSON map with username field
+     */
+    @GetMapping("/api/hello/me")
+    @Operation(summary = "Get current user info", description = "Returns the username of the currently authenticated user")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User info retrieved successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"username\": \"testuser\"}"))
+        ),
+        @ApiResponse(responseCode = "401", description = "Authentication required"),
+        @ApiResponse(responseCode = "403", description = "Forbidden - invalid JWT token")
+    })
+    public Map<String, String> getMe() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth != null && auth.isAuthenticated() ? auth.getName() : "unknown";
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("username", username);
+        return response;
+    }
+
+    /**
      * GET /api/calculate endpoint.
      * Accepts two integers and an optional operation, delegates to Calculator.calculate(),
      * and returns a JSON response with operands, operation, and result.

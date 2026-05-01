@@ -7,7 +7,17 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  token: string
+  access_token: string
+  refresh_token: string
+}
+
+interface RefreshRequest {
+  refresh_token: string
+}
+
+interface RefreshResponse {
+  access_token: string
+  refresh_token: string
 }
 
 interface CalculateRequest {
@@ -44,6 +54,13 @@ export const calculatorApi = createApi({
         body: credentials,
       }),
     }),
+    refresh: builder.mutation<RefreshResponse, RefreshRequest>({
+      query: (body) => ({
+        url: '/auth/refresh',
+        method: 'POST',
+        body,
+      }),
+    }),
     calculate: builder.query<CalculateResponse, CalculateRequest>({
       query: ({ a, b, op }) => ({
         url: '/calculate',
@@ -54,4 +71,4 @@ export const calculatorApi = createApi({
   }),
 })
 
-export const { useLoginMutation, useCalculateQuery, useLazyCalculateQuery } = calculatorApi
+export const { useLoginMutation, useRefreshMutation, useCalculateQuery, useLazyCalculateQuery } = calculatorApi
