@@ -20,6 +20,10 @@ public class InMemoryUserStore {
         String encodedPassword = encoder.encode("SecurePass123!");
         users.put("testuser", new User("testuser", encodedPassword, "USER"));
         users.put("testuser2", new User("testuser2", encodedPassword, "USER"));
+        
+        // Add alice user with her own password
+        String aliceEncodedPassword = encoder.encode("AnotherPass123!");
+        users.put("alice", new User("alice", aliceEncodedPassword, "USER"));
     }
 
     /**

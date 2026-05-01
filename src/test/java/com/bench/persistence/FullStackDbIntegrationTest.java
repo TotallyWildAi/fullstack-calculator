@@ -191,6 +191,51 @@ class FullStackDbIntegrationTest {
     }
 
     /**
+     * Test that /api/history is isolated per user.
+     * Flow: testuser logs in, performs a calculation, verifies /api/history returns 1 record;
+     *       alice logs in and calls /api/history, expects empty array (no calculations for alice).
+     */
+    @Test
+    @Transactional
+    void testHistoryIsolatedPerUser() throws Exception {
+        // Login as testuser and get token
+        String testuserToken = loginAndGetToken("testuser", "SecurePass123!");
+
+        // testuser performs a calculation
+        mockMvc.perform(get("/api/calculate")
+                .param("a", "10")
+                .param("b", "5")
+                .param("op", "add")
+                .header("Authorization", "Bearer " + testuserToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").value(15));
+
+        // Verify testuser's /api/history returns exactly 1 record
+        MvcResult historyResult = mockMvc.perform(get("/api/history")
+                .header("Authorization", "Bearer " + testuserToken))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String historyBody = historyResult.getResponse().getContentAsString();
+        List<Map<String, Object>> testuserHistory = objectMapper.readValue(historyBody, List.class);
+        assertEquals(1, testuserHistory.size(), "testuser should have exactly 1 calculation");
+        assertEquals(15, ((Map<String, Object>) testuserHistory.get(0)).get("result"), "calculation result should be 15");
+
+        // Login as alice and get token
+        String aliceToken = loginAndGetToken("alice", "AnotherPass123!");
+
+        // Verify alice's /api/history is empty (she has no calculations)
+        MvcResult aliceHistoryResult = mockMvc.perform(get("/api/history")
+                .header("Authorization", "Bearer " + aliceToken))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String aliceHistoryBody = aliceHistoryResult.getResponse().getContentAsString();
+        List<Map<String, Object>> aliceHistory = objectMapper.readValue(aliceHistoryBody, List.class);
+        assertEquals(0, aliceHistory.size(), "alice should have no calculations");
+    }
+
+    /**
      * Helper method: authenticate user and extract JWT token from login response.
      * Posts to /api/auth/login with username and password, extracts token from JSON response.
      *
@@ -214,6 +259,8 @@ class FullStackDbIntegrationTest {
         // Extract token from response
         String responseBody = loginResult.getResponse().getContentAsString();
         Map<String, String> responseMap = objectMapper.readValue(responseBody, Map.class);
-        return responseMap.get("token");
+        
+        // Login response contains 'access_token' field (not 'token')
+        return responseMap.get("access_token");
     }
 }
