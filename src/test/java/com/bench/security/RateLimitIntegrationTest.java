@@ -167,6 +167,6 @@ class RateLimitIntegrationTest {
 
         String responseBody = loginResult.getResponse().getContentAsString();
         Map<String, String> responseMap = objectMapper.readValue(responseBody, Map.class);
-        return responseMap.get("token");
+        return responseMap.get("access_token");
     }
 }
