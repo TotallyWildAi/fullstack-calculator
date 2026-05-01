@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * In-memory user store that pre-populates a test user with BCrypt-encoded password.
+ * In-memory user store that pre-populates test users with BCrypt-encoded passwords.
  * Used by CustomUserDetailsService to load user credentials.
  */
 @Component
@@ -17,8 +17,11 @@ public class InMemoryUserStore {
 
     public InMemoryUserStore() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode("SecurePass123!");
-        users.put("testuser", new User("testuser", encodedPassword, "USER"));
+        String encodedPassword1 = encoder.encode("SecurePass123!");
+        users.put("testuser", new User("testuser", encodedPassword1, "USER"));
+        
+        String encodedPassword2 = encoder.encode("AnotherPass123!");
+        users.put("anotheruser", new User("anotheruser", encodedPassword2, "USER"));
     }
 
     /**
